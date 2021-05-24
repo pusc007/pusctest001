@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node server.js",
-    "build-server": "babel ./src -d ./server",
-    "dev": "node server.js"
+    "start": "node server.js"
   },
   "_moduleAliases": {
     "@src": "./src"

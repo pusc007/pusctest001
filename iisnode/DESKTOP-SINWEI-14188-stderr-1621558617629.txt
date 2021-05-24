@@ -1,0 +1,22 @@
+(node:14188) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+TypeError: Converting circular structure to JSON
+    --> starting at object with constructor 'Socket'
+    |     property 'parser' -> object with constructor 'HTTPParser'
+    --- property 'socket' closes the circle
+    at JSON.stringify (<anonymous>)
+    at D:\cai\專案\噪音車輛檢驗\後端\API\server.js:41:19
+    at Layer.handle [as handle_request] (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\layer.js:95:5)
+    at next (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\route.js:137:13)
+    at Route.dispatch (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\route.js:112:3)
+    at Layer.handle [as handle_request] (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\layer.js:95:5)
+    at D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\index.js:281:22
+    at Function.process_params (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\index.js:335:12)
+    at next (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\index.js:275:10)
+    at D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\index.js:635:15
+    at next (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\index.js:260:14)
+    at Function.handle (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\index.js:174:3)
+    at router (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\index.js:47:12)
+    at Layer.handle [as handle_request] (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\layer.js:95:5)
+    at trim_prefix (D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\index.js:317:13)
+    at D:\cai\專案\噪音車輛檢驗\後端\API\node_modules\express\lib\router\index.js:284:7

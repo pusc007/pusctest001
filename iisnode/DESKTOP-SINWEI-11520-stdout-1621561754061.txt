@@ -1,0 +1,4 @@
+前台：http://localhost:\\.\pipe\074e245e-79a3-443e-831e-ca809e2f2649/noise
+後台：http://localhost:\\.\pipe\074e245e-79a3-443e-831e-ca809e2f2649/noiseBackEnd
+前台用：http://localhost:\\.\pipe\074e245e-79a3-443e-831e-ca809e2f2649test02/noise/api
+後台用：http://localhost:\\.\pipe\074e245e-79a3-443e-831e-ca809e2f2649test02/noiseBackEnd/api

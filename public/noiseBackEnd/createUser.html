@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <span>token：</span>
+      <input
+        id="input_token"
+        value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwOWRlOTNhMmQ2MTcwNWYxMGRmYjAzMyIsImVtYWlsIjoidXNlcjAxIiwibmFtZSI6IumZs-Wkp-WkpyIsImlhdCI6MTYyMDk2MzkxMywiZXhwIjoxNjIxMDUwMzEzfQ.odvJhWh4phJKMu0y4yZOKbJ_TJQwYufAGJDga41DqmQ"
+      />
+    </div>
+    <hr />
+    <div>
+      <span>公文號：</span>
+      <input id="input_casenum" value="112233445566" />
+    </div>
+    <div>
+      <span>車牌號：</span>
+      <input id="input_carnum" value="AAA-2566" />
+    </div>
+    <div>
+      <span>姓名：</span>
+      <input id="input_username" value="黃大大" />
+    </div>
+    <div>
+      <span>身分證/公司行號：</span>
+      <input id="input_idcard" value="S123456789" />
+    </div>
+    <div>
+      <span>地址：</span>
+      <input id="input_address" value="高雄市高雄軟體園區" />
+    </div>
+
+    <div>
+      <span>預約日期：</span>
+      <input id="input_redate" type="date" value="2021-05-13" />
+    </div>
+    <div>
+      <span>展延日期：</span>
+      <input id="input_exdate" type="date" value="2021-05-21" />
+    </div>
+    <div>
+      <span>檢測縣市：</span>
+      <input id="input_city" value="" />
+    </div>
+    <div>
+      <span>檢測站點：</span>
+      <input id="input_site" value="" />
+    </div>
+    <div>
+      <span>檢測結果：</span>
+      <input id="input_result" value="" />
+    </div>
+
+    <button id="btn01">建立使用者</button>
+    <div id="text01"></div>
+    <script>
+      const btn01 = document.getElementById("btn01");
+      const text01 = document.getElementById("text01");
+      const input_token = document.getElementById("input_token");
+      const input_casenum = document.getElementById("input_casenum");
+      const input_carnum = document.getElementById("input_carnum");
+      const input_username = document.getElementById("input_username");
+      const input_idcard = document.getElementById("input_idcard");
+      const input_address = document.getElementById("input_address");
+
+      const input_redate = document.getElementById("input_redate");
+      const input_exdate = document.getElementById("input_exdate");
+      const input_city = document.getElementById("input_city");
+      const input_site = document.getElementById("input_site");
+      const input_result = document.getElementById("input_result");
+      btn01.addEventListener("click", () => {
+        const query = `mutation($input:UserInput!){
+                        createUser(input:$input){
+                          id
+                          casenum
+                          carnum
+                          username
+                          idcard
+                          address
+                          redate
+                          exdate
+                          city
+                          site
+                          result                          
+                        }
+                      }`;
+        const variables = {
+          input: {
+            casenum: input_casenum.value,
+            carnum: input_carnum.value,
+            username: input_username.value,
+            idcard: input_idcard.value,
+            address: input_address.value,
+            redate: new Date(input_redate.value),
+            exdate: new Date(input_exdate.value),
+            city: input_city.value,
+            site: input_site.value,
+            result: input_result.value,
+          },
+        };
+        axios
+          .post(
+            "api",
+            { query, variables },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+                "x-token": input_token.value,
+              },
+            }
+          )
+          .then((res) => res.data)
+          .then((data) => {
+            if (data.errors) {
+              data.errors.forEach((el) => {
+                try {
+                  const message = JSON.parse(el.message);
+                  alert(message.text);
+                } catch (error) {
+                  console.log(el.message);
+                }
+              });
+            } else {
+              text01.textContent = JSON.stringify(data.data);
+            }
+          });
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <div>
+      <span>帳號：</span>
+      <input id="input_account" value="user01" />
+    </div>
+    <div>
+      <span>密碼：</span>
+      <input id="input_password" value="123456" />
+    </div>
+    <button id="btn01">登入</button>
+    <div id="text01"></div>
+    <script>
+      const btn01 = document.getElementById("btn01");
+      const text01 = document.getElementById("text01");
+      const input_account = document.getElementById("input_account");
+      const input_password = document.getElementById("input_password");
+      const input_username = document.getElementById("input_username");
+      const input_idcard = document.getElementById("input_idcard");
+      const input_address = document.getElementById("input_address");
+
+      const input_redate = document.getElementById("input_redate");
+      const input_exdate = document.getElementById("input_exdate");
+      const input_city = document.getElementById("input_city");
+      const input_site = document.getElementById("input_site");
+      const input_result = document.getElementById("input_result");
+      btn01.addEventListener("click", () => {
+        const query = `mutation($account:String!,$password:String!){  
+                        login(account:$account,password:$password){
+                          token
+                        }
+                      }`;
+        const variables = {
+          account: input_account.value,
+          password: input_password.value,
+        };
+        axios
+          .post(
+            "api",
+            { query, variables },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
+            }
+          )
+          .then((res) => res.data)
+          .then((data) => {
+            if (data.errors) {
+              text01.textContent = "";
+              data.errors.forEach((el) => {
+                const message = JSON.parse(el.message);
+                alert(message.text);
+              });
+            } else {
+              text01.textContent = JSON.stringify(data.data);
+            }
+          });
+      });
+    </script>
+  </body>
+</html>

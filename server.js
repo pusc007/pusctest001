@@ -1,67 +1,120 @@
-require("module-alias/register"); //註冊路徑別名
-const { ApolloServer } = require("apollo-server-express");
-const Express = require("express");
-const Mongoose = require("mongoose");
-const Path = require("path");
-const noise_typeDefs = require("@src/graphql/noise/typeDefs");
-const noise_resolvers = require("@src/graphql/noise/resolvers");
-const noiseBackEnd_typeDefs = require("@src/graphql/noiseBackEnd/typeDefs");
-const noiseBackEnd_resolvers = require("@src/graphql/noiseBackEnd/resolvers");
-const depthLimit = require("graphql-depth-limit");
-const startServer = async () => {
-  const app = Express();
-  //const basePath = Path.resolve("./public");
+import express from "express";
+import { graphqlHTTP } from "express-graphql";
+import { buildSchema } from "graphql";
+import path from "path";
+//import a from "./aaa/abc.js";
 
-  const virtualDirPath = process.env.virtualDirPath || "";
-  const noiseUrl = virtualDirPath + "/noise";
-  const noiseBackEndUrl = virtualDirPath + "/noiseBackEnd";
-  app.use(noiseUrl, Express.static(__dirname + "/public/noise")); //使用靜態資料夾
-  app.use(noiseBackEndUrl, Express.static(__dirname + "/public/noiseBackEnd")); //使用靜態資料夾
+const app = express();
+const __dirname = path.resolve();
+console.log(__dirname);
+app.use(express.static("public")); //使用靜態資料夾
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + "/public/aaa.html"); //發送index.html
+});
 
-  //前台
-  /*app.get(virtualDirPath + "/noise", function (req, res) {
-    res.sendFile(basePath + "/noise/index.html"); //發送index.html
-  });*/
-  const noiseServer = new ApolloServer({
-    typeDefs: noise_typeDefs,
-    resolvers: noise_resolvers,
-    introspection: true,
-    playground: true,
-    context: ({ req }) => ({ token: req.headers["x-token"] }),
-    validationRules: [depthLimit(5)],
-  });
-  noiseServer.applyMiddleware({ app, path: noiseUrl + "/api" });
+/**
+ * graphql的東西
+ */
 
-  //後台
-  /*app.get(virtualDirPath + "/noiseBackEnd", function (req, res) {
-    res.sendFile(basePath + "/noiseBackEnd/index.html"); //發送index.html
-  });*/
-  /*app.get(virtualDirPath + "/aaa", function (req, res) {
-    res.send(JSON.stringify(process.env)); //發送index.html
-  });*/
-  const noiseBackEndServer = new ApolloServer({
-    typeDefs: noiseBackEnd_typeDefs,
-    resolvers: noiseBackEnd_resolvers,
-    introspection: true,
-    playground: true,
-    context: ({ req }) => ({ token: req.headers["x-token"] }),
-    validationRules: [depthLimit(5)],
-  });
-  noiseBackEndServer.applyMiddleware({ app, path: noiseBackEndUrl + "/api" });
-  const mongodbUrl = process.env.MongodbUrl || "mongodb://localhost:27017/Noise";
-  await Mongoose.connect(mongodbUrl, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+//假資料
+const users = [
+  {
+    id: 1,
+    name: "A",
+    age: 10,
+  },
+  {
+    id: 2,
+    name: "B",
+    age: 20,
+  },
+  {
+    id: 3,
+    name: "C",
+    age: 30,
+  },
+];
 
-  const port = process.env.PORT || 4000;
-  const host = process.env.BASE_URL || "localhost";
-  const baseUrl = `http://${host}:${port}`;
-  app.listen(port, () => {
-    console.log(`前台：${baseUrl}/noise`);
-    console.log(`後台：${baseUrl}/noiseBackEnd`);
-    console.log(`前台用：${baseUrl}${noiseServer.graphqlPath}`);
-    console.log(`後台用：${baseUrl}${noiseBackEndServer.graphqlPath}`);
-  });
+const schema = buildSchema(`
+  type User {
+    id: Int
+    name: String
+    age: Int
+  }
+  type Query {
+    me: User
+    user(id: Int): User
+    users: [User]
+  }
+`);
+const rootValue = {
+  me: () => users[0],
+  user: ({ id }) => users.find((el) => el.id === id),
+  users: () => users,
 };
-startServer();
+
+/**
+ * 查詢條件
+
+{
+  me {
+    id
+    name
+    age
+  }
+}
+
+{
+  user(id:1) {
+    id
+    name
+    age
+  }
+}
+
+{
+  users {
+    id
+    name
+    age
+  }
+}
+*/
+
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema,
+    rootValue,
+    graphiql: true,
+  })
+); //啟用graphql工具
+app.all("/aaa", function (req, res, next) {
+  console.log(res);
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  //next();
+  res.send({ aaa: "asdasd" });
+});
+/*app.get("/aaa", function (req, res) {
+  //console.log(res.req.query);
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  //res.send({ aaa: "asdasd" });
+});*/
+/*app.delete("/ccc", function (req, res) {
+  console.log(res.req.query);
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.send({ aaa: "asdasd" });
+});*/
+
+app.listen(process.env.PORT || 4001, () => {
+  console.log("啟動 http://localhost:4001/");
+}); //連接 port

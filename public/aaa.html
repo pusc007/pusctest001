@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <div>測試網頁</div>
+    <button id="btn01">讀取</button>
+    <div id="text01"></div>
+    <img src="img01.png" alt="" />
+    <script>
+      const btn01 = document.getElementById("btn01");
+      const text01 = document.getElementById("text01");
+      btn01.addEventListener("click", () => {
+        axios.post("/graphql", { query: "{ me { id name } }" }).then((res) => {
+          //console.log(res.data.data);
+          text01.textContent = JSON.stringify(res.data.data);
+        });
+      });
+    </script>
+  </body>
+</html>

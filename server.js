@@ -1,5 +1,5 @@
-import express from "express";
-import path from "path";
+const express = require("express");
+const path = require("path");
 
 const app = express();
 const __dirname = path.resolve();
@@ -12,5 +12,5 @@ app.get("/aaa", function (req, res) {
 });
 
 app.listen(process.env.PORT || 5000, () => {
-  console.log("啟動 http://localhost:4001/");
+  console.log("啟動 http://localhost:5000/");
 }); //連接 port
